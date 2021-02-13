@@ -1,4 +1,6 @@
 const rp = require("request-promise");
+const fs = require("fs");
+
 const symbols = "BTC,ETH,USDT,ADA,XRP,DOT,BNB,LTC,LINK,DOGE";
 const APIKey = process.env.CMCKEY;
 
@@ -29,17 +31,20 @@ const requestPriceData = {
 };
 
 async function makeAPIRequests() {
+  let sqlText = "";
   try {
     const [meta, price] = await Promise.all([
       rp(requestMetaData),
       rp(requestPriceData),
     ]);
 
-    console.log(createMetaDataSQL(meta.data));
-    console.log(createPriceDataSQL(price.data));
+    sqlText = sqlText.concat(createMetaDataSQL(meta.data));
+    sqlText = sqlText.concat(createPriceDataSQL(price.data));
   } catch (error) {
     console.log("API call error:", error.message);
   }
+
+  return sqlText;
 }
 
 function createMetaDataSQL(data) {
@@ -58,10 +63,33 @@ function createPriceDataSQL(data) {
 
   for (const key in data) {
     str = str.concat(
-      `INSERT INTO mktprices (date, cryptoId, price) VALUES ('${data[key].quote.USD.last_updated}',(SELECT id from cryptos where symbol='${data[key].symbol}'), ${data[key].quote.USD.price});\n`
+      `INSERT INTO mktprices (date, cryptoId, marketcap, price) VALUES ('${data[key].quote.USD.last_updated}',(SELECT id from cryptos where symbol='${data[key].symbol}'), ${data[key].quote.USD.market_cap}, ${data[key].quote.USD.price});\n`
     );
   }
   return str;
 }
 
-makeAPIRequests().then(() => console.log("done!"));
+const sqlTableSchema = `DROP TABLE IF EXISTS mktprices;
+DROP TABLE IF EXISTS cryptos;
+
+CREATE TABLE cryptos (
+  id SERIAL PRIMARY KEY,
+  symbol VARCHAR(8) UNIQUE NOT NULL,
+  name VARCHAR(20) NOT NULL,
+  description TEXT DEFAULT NULL
+);
+
+CREATE TABLE mktprices (
+  date timestamp DEFAULT now(),
+  cryptoId INTEGER REFERENCES cryptos(id) NOT NULL,
+  marketcap DECIMAL(20,8) NOT NULL,
+  price DECIMAL(20,8) NOT NULL
+);\n`;
+
+// write data to seed.sql
+makeAPIRequests().then((sqlText) => {
+  fs.writeFile("seed.sql", sqlTableSchema.concat(sqlText), (err) => {
+    if (err) return console.log(err);
+    console.log("Wrote data from CoinMarketCap to seed.sql!");
+  });
+});

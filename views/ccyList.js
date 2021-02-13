@@ -21,6 +21,7 @@ module.exports = (ccys) => html`<!DOCTYPE html>
               <small>(${ccy.symbol})</small>
             </p>
             <small class="ccys-info">
+              market cap: ${ccy.marketcap ? formatter(ccy.marketcap) : 0} |
               market price: ${ccy.price ? formatter(ccy.price) : 0} |
               ${timeAgo(ccy.date)}
             </small>

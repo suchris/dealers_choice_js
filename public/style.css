@@ -39,6 +39,11 @@ header > img {
   vertical-align: bottom;
 }
 
+header > a {
+  color: rgb(191, 213, 230);
+  align-self: flex-end;
+}
+
 form {
   padding: 15px;
 }

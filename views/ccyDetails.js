@@ -9,9 +9,12 @@ module.exports = (ccy) => html`<!DOCTYPE html>
     </head>
     <body>
       <div class="ccys-list">
-        <header><img src="/${ccy.symbol}-logo.png" />${ccy.name}</header>
+        <header><img src="/logo.png" /><a href="/">Back to Top List</a></header>
         <div class="ccys-item">
-          <p>${formatter(ccy.price)} <small>(${ccy.symbol})</small></p>
+          <p>
+            <img src="/${ccy.symbol}-logo.png" />${ccy.name}
+            <small>(${ccy.symbol})</small> ${formatter(ccy.price)}
+          </p>
           <p>${ccy.description}</p>
         </div>
       </div>
