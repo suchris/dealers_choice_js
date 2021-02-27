@@ -1,6 +1,10 @@
 const rp = require("request-promise");
 const fs = require("fs");
 
+/*
+Christine, this is a really sophisticated file and I really love that you're
+using functions and API to generate your seed file!!! This is extremely good!!
+*/
 const symbols = "BTC,ETH,USDT,ADA,XRP,DOT,BNB,LTC,LINK,DOGE";
 const APIKey = process.env.CMCKEY;
 

@@ -4,6 +4,7 @@ const ccyDetails = require("../views/ccyDetails");
 
 const router = require("express").Router();
 
+//love your use of a base query!
 const baseQuery =
   "SELECT cryptos.*, marketcap, price, mktprices.date as date FROM cryptos INNER JOIN mktprices ON mktprices.cryptoId = cryptos.id JOIN (SELECT cryptoId, max(date) AS date FROM mktprices GROUP BY cryptoId) AS latest_px ON mktprices.cryptoId = latest_px.cryptoId AND mktprices.date = latest_px.date\n";
 

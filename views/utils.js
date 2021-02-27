@@ -1,3 +1,4 @@
+// LOVE THIS!!!!! 
 const formatter = function (money) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

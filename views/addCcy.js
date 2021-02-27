@@ -1,4 +1,5 @@
 const html = require("html-template-tag");
+/* i really like this! but it doesnt look like you used it anywhere :( ) */
 
 module.exports = () => html`<!DOCTYPE html>
   <html>
